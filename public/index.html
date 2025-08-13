@@ -18,13 +18,27 @@
   <script>
     document.getElementById('transcribe').addEventListener('click', async () => {
       const url = document.getElementById('url').value;
-      const res = await fetch('/transcribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url })
-      });
-      const data = await res.json();
-      document.getElementById('transcript').value = data.text || data.error;
+      const textarea = document.getElementById('transcript');
+      const button = document.getElementById('transcribe');
+      button.disabled = true;
+      try {
+        const res = await fetch('/transcribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        if (!res.ok) {
+          const errText = await res.text();
+          textarea.value = errText || 'An error occurred';
+          return;
+        }
+        const data = await res.json();
+        textarea.value = data.text || data.error;
+      } catch (e) {
+        textarea.value = 'Unable to transcribe at this time.';
+      } finally {
+        button.disabled = false;
+      }
     });
 
     async function download(type) {
