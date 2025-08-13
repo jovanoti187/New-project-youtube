@@ -1,0 +1,23 @@
+{
+  "name": "new-project-youtube",
+  "version": "1.0.0",
+  "description": "Deze app zet automatisch YouTube-video’s om naar tekst.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node -e \"console.log('No tests')\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "docx": "^9.5.1",
+    "express": "^5.1.0",
+    "fluent-ffmpeg": "^2.1.3",
+    "openai": "^5.12.2",
+    "pdfkit": "^0.17.1",
+    "ytdl-core": "^4.11.5"
+  }
+}

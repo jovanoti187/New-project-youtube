@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>YouTube Transcriber</title>
+</head>
+<body>
+  <h1>YouTube Transcriber</h1>
+  <input type="text" id="url" placeholder="YouTube link" size="60" />
+  <button id="transcribe">Transcribeer</button>
+  <br /><br />
+  <textarea id="transcript" rows="15" cols="100"></textarea>
+  <br />
+  <button id="download-txt">Download TXT</button>
+  <button id="download-docx">Download DOCX</button>
+  <button id="download-pdf">Download PDF</button>
+
+  <script>
+    document.getElementById('transcribe').addEventListener('click', async () => {
+      const url = document.getElementById('url').value;
+      const res = await fetch('/transcribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      document.getElementById('transcript').value = data.text || data.error;
+    });
+
+    async function download(type) {
+      const text = document.getElementById('transcript').value;
+      const res = await fetch('/download/' + type, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'transcript.' + type;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('download-txt').onclick = () => download('txt');
+    document.getElementById('download-docx').onclick = () => download('docx');
+    document.getElementById('download-pdf').onclick = () => download('pdf');
+  </script>
+</body>
+</html>
